@@ -1,0 +1,16 @@
+[project]
+name = "lab-recorder-python"
+version = "0.1.0"
+authors = [
+    { name="Yahmin Haj", email="yahminhaj@gmail.com" },
+    { name="Pho Hale", email="phohale@gmail.com" }
+]
+description = "A cross-platform Python implementation of Lab Streaming Layer (LSL) recorder"
+readme = "README.md"
+requires-python = ">=3.9.13"
+dependencies = [
+    "numpy>=2.0.2",
+    "pyinstaller>=6.16.0",
+    "pylsl>=1.17.6",
+    "pyxdf>=1.17.0",
+]

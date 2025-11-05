@@ -23,7 +23,7 @@ setup(
     description="A cross-platform Python implementation of Lab Streaming Layer (LSL) recorder",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
-    url="https://github.com/your-username/lab-recorder-python",
+    url="https://github.com/CommanderPho/lab-recorder-python",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
