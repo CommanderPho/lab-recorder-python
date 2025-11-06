@@ -48,10 +48,21 @@ class LabRecorder:
         self.buffer_lock = threading.Lock()
         self.writer_thread: Optional[threading.Thread] = None
         
+        # Resolve remote control from config (if provided)
+        cfg_enable = self.config.get('remote_control.enabled', None)
+        cfg_port = self.config.get('remote_control.port', None)
+        final_enable_remote = bool(cfg_enable) if cfg_enable is not None else enable_remote_control
+        final_remote_port = int(cfg_port) if cfg_port is not None else remote_control_port
+
+        # Prefer config-provided filename if caller used default
+        cfg_filename = self.config.get('filename', None)
+        if (filename is None or filename == "recording.xdf") and cfg_filename:
+            self.filename = cfg_filename
+        
         # Remote control
         self.remote_control_server: Optional[RemoteControlServer] = None
-        if enable_remote_control:
-            self.remote_control_server = RemoteControlServer(self, remote_control_port)
+        if final_enable_remote:
+            self.remote_control_server = RemoteControlServer(self, final_remote_port)
         
         # Stream recording state
         self.stream_inlets = {}  # uid -> inlet
@@ -87,6 +98,15 @@ class LabRecorder:
         if not selected_streams:
             raise RuntimeError("No streams selected for recording")
         
+        # Ensure output directory exists
+        try:
+            import os
+            out_dir = os.path.dirname(self.filename)
+            if out_dir and not os.path.isdir(out_dir):
+                os.makedirs(out_dir, exist_ok=True)
+        except Exception as e:
+            print(f"Warning: Could not create output directory for {self.filename}: {e}")
+
         # Initialize XDF writer
         self.xdf_writer = SimpleXDFWriter(self.filename)
         self.xdf_writer.open()

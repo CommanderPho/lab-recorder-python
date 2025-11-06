@@ -71,10 +71,22 @@ Examples:
         remote_control_port=args.port,
         config_file=args.config
     )
+
+    # Reflect any overrides from configuration (.cfg or JSON)
+    cfg_enabled = recorder.config.get('remote_control.enabled', None)
+    if cfg_enabled is not None:
+        enable_remote = bool(cfg_enabled)
+    cfg_port = recorder.config.get('remote_control.port', None)
+    if cfg_port is not None:
+        try:
+            args.port = int(cfg_port)
+        except Exception:
+            pass
+    auto_start = bool(recorder.config.get('auto_start', False))
     
     try:
         print("=== Lab Recorder Python ===")
-        print(f"Output file: {args.filename}")
+        print(f"Output file: {recorder.filename}")
         
         # Start remote control server if enabled
         if enable_remote:
@@ -95,7 +107,7 @@ Examples:
             
             print(f"\nSelected {len(uids_to_record)} streams for recording.")
             
-            if enable_remote:
+            if enable_remote and not auto_start:
                 print("\nRecorder ready. Use remote control commands to start/stop recording.")
                 print("Or press Ctrl+C to exit.")
                 try:
@@ -117,7 +129,7 @@ Examples:
                     recorder.stop_recording()
         else:
             print("No LSL streams found.")
-            if enable_remote:
+            if enable_remote and not auto_start:
                 print("Remote control server is running. You can:")
                 print("1. Start streams and use 'update' command")
                 print("2. Use remote control to manage recording")
