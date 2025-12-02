@@ -2213,3 +2213,6 @@
 .venv/lib/python3.12/site-packages/pyxdf-1.17.0.dist-info/WHEEL
 .venv/lib/python3.12/site-packages/pyxdf-1.17.0.dist-info/licenses/LICENSE
 .venv
+**/*.egg-info
+**/__pycache__
+**/desktop.ini
