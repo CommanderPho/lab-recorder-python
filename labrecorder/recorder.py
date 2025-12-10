@@ -89,15 +89,24 @@ class LabRecorder:
         """
         self.stream_manager.select_streams(stream_uids)
     
-    def start_recording(self) -> None:
+    def start_recording(self, filename: Optional[str] = None, streams: Optional[List[pylsl.StreamInfo]]=None) -> None:
         """Start the recording process."""
         if self.is_recording_flag:
             raise RuntimeError("Recording is already in progress")
         
-        selected_streams = self.stream_manager.get_selected_streams()
+        if streams is not None:
+            selected_streams = streams ## use passed streams
+        else:
+            selected_streams = self.stream_manager.get_selected_streams()
+
         if not selected_streams:
             raise RuntimeError("No streams selected for recording")
         
+
+        if filename is not None:
+            self.filename = filename ## set filename to the provided one
+
+
         # Ensure output directory exists
         try:
             import os
@@ -125,6 +134,7 @@ class LabRecorder:
         
         print(f"Recording started for {len(selected_streams)} streams.")
     
+
     def stop_recording(self) -> None:
         """Stop the recording process."""
         if not self.is_recording_flag:
