@@ -79,7 +79,8 @@ class LabRecorder:
             List of discovered stream info objects
         """
         return self.stream_manager.find_streams(timeout)
-    
+
+
     def select_streams_to_record(self, stream_uids: List[str]) -> None:
         """
         Select streams for recording.
@@ -89,13 +90,18 @@ class LabRecorder:
         """
         self.stream_manager.select_streams(stream_uids)
     
+
     def start_recording(self, filename: Optional[str] = None, streams: Optional[List[pylsl.StreamInfo]]=None) -> None:
         """Start the recording process."""
         if self.is_recording_flag:
             raise RuntimeError("Recording is already in progress")
         
         if streams is not None:
-            selected_streams = streams ## use passed streams
+            # Convert list to dictionary format expected by _setup_recording_streams
+            if isinstance(streams, list):
+                selected_streams = {stream_info.uid(): stream_info for stream_info in streams}
+            else:
+                selected_streams = streams  # Already a dict
         else:
             selected_streams = self.stream_manager.get_selected_streams()
 
